@@ -1,0 +1,185 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Free Water Elimation code 2020"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "import relevant modules"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "import requests\n",
+    "import dipy.reconst.fwdti as fwdti\n",
+    "import dipy.reconst.dti as dti\n",
+    "import matplotlib.pyplot as plt\n",
+    "from dipy.data import fetch_cenir_multib\n",
+    "from dipy.data import read_cenir_multib\n",
+    "from dipy.segment.mask import median_otsu"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Import multiple b value dataset"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Download Progress: [########################################] 100.00%  of 0.01 MBMB"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "({'4D_dwi_eddycor_B200.nii.gz': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/4D_dwi_eddycor_B200.nii.gz',\n",
+       "   'fd704aa3deb83c1c7229202cb3db8c48'),\n",
+       "  'dwi_bvals_B200': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/dwi_bvals_B200',\n",
+       "   '80ae5df76a575fe5bf9f1164bb0d4cfb'),\n",
+       "  'dwi_bvecs_B200': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/dwi_bvecs_B200',\n",
+       "   '18e90f8a3e6a4db2457e5b1ba1cc98a9'),\n",
+       "  '4D_dwieddycor_B400.nii.gz': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/4D_dwieddycor_B400.nii.gz',\n",
+       "   '3d0f2b8ef7b6a4a3aa5c4f7a90c9cfec'),\n",
+       "  'bvals_B400': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvals_B400',\n",
+       "   'c38056c40c9cc42372232d6e75c47f54'),\n",
+       "  'bvecs_B400': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvecs_B400',\n",
+       "   '810d79b4c30cb7dff3b2000017d5f72a'),\n",
+       "  '4D_dwieddycor_B1000.nii.gz': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/4D_dwieddycor_B1000.nii.gz',\n",
+       "   'dde8037601a14436b2173f4345b5fd17'),\n",
+       "  'bvals_B1000': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvals_B1000',\n",
+       "   '97de6a492ae304f39e0b418b6ebac64c'),\n",
+       "  'bvecs_B1000': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvecs_B1000',\n",
+       "   'f28a0faa701bdfc66e31bde471a5b992'),\n",
+       "  '4D_dwieddycor_B2000.nii.gz': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/4D_dwieddycor_B2000.nii.gz',\n",
+       "   'c5e4b96e3afdee99c0e994eff3b2331a'),\n",
+       "  'bvals_B2000': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvals_B2000',\n",
+       "   '9c83b8d5caf9c3def240f320f2d2f56c'),\n",
+       "  'bvecs_B2000': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvecs_B2000',\n",
+       "   '05446bd261d57193d8dbc097e06db5ff'),\n",
+       "  '4D_dwieddycor_B3000.nii.gz': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/4D_dwieddycor_B3000.nii.gz',\n",
+       "   'f0d70456ce424fda2cecd48e64f3a151'),\n",
+       "  'bvals_B3000': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvals_B3000',\n",
+       "   '336accdb56acbbeff8dac1748d15ceb8'),\n",
+       "  'bvecs_B3000': ('https://digital.lib.washington.edu/researchworks/bitstream/handle/1773/33311/bvecs_B3000',\n",
+       "   '27089f3baaf881d96f6a9da202e3d69b')},\n",
+       " '/Users/fayemckenna/.dipy/cenir_multib')"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "fetch_cenir_multib(with_raw=False)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "from the data read only b-values up to to 2000 s/mm2 to decrease the influence of non-Gaussian diffusion effects of the tissue which are not taken into account by the free water elimination model"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "bvals = [200, 400, 1000, 2000]\n",
+    "\n",
+    "img, gtab = read_cenir_multib(bvals)\n",
+    "\n",
+    "data = np.asarray(img.dataobj)\n",
+    "\n",
+    "affine = img.affine"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Remove the background of the image to avoid unnecessary calculations."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 11,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "maskdata, mask = median_otsu(data, vol_idx=[0, 1], median_radius=4, numpass=2,\n",
+    "                             autocrop=False, dilate=1)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "metadata": {},
+   "source": [
+    "Processes only an axial slice for illustration."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 12,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "axial_slice = 40\n",
+    "\n",
+    "mask_roi = np.zeros(data.shape[:-1], dtype=bool)\n",
+    "mask_roi[:, :, axial_slice] = mask[:, :, axial_slice]"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.8.1"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 4
+}
