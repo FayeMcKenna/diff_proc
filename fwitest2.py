@@ -17,15 +17,15 @@ from dipy.io import read_bvals_bvecs
 from dipy.core.gradients import gradient_table
 
 # load directory names
-input_directory = "/Users/fm1545/Desktop/dipy_data/r01_multib"
+input_directory = "/Users/fm1545/Desktop/R01_study/study/1003/dtrecon/output"
 #working_directory = "data/working"
-output_directory = "/Users/fm1545/Desktop/dipy_data/r01_multib"
+output_directory = "/Users/fm1545/Desktop/R01_study/study/1003/dtrecon/output"
 
 # filenames -- mask has all NaN removed to work with function
-fdwi = input_directory + "/dwi1001.nii.gz"
-fmask = input_directory + "/mask2.nii.gz"
-fbval = input_directory + "/bvals.txt"
-fbvec = input_directory + "/bvecs.txt"
+fdwi = input_directory + "/FWIdata.nii.gz"
+fmask = input_directory + "/mask.nii.gz"
+fbval = input_directory + "/fwibvals.txt"
+fbvec = input_directory + "/fwibvecs.txt"
 
 # Load the data
 img = nib.load(fdwi)
@@ -67,10 +67,10 @@ dti_MD = dtifit.md
 F = fwdtifit.f
 
 #save variables as nifti images
-save_nifti('WB_regMD.nii.gz',dti_MD,affine)
-save_nifti('WB_regFA.nii.gz',dti_FA,affine)
-save_nifti('WB_fwi.nii.gz',F,affine)
-save_nifti('WB_fwiFA.nii.gz',FA,affine)
-save_nifti('WB_fwiMD.nii.gz',MD,affine)
+save_nifti('/Users/fm1545/Desktop/R01_study/study/1003/dtrecon/WB_regMD.nii.gz',dti_MD,affine)
+save_nifti('/Users/fm1545/Desktop/R01_study/study/1003/dtrecon/output/WB_regFA.nii.gz',dti_FA,affine)
+save_nifti('/Users/fm1545/Desktop/R01_study/study/1003/dtrecon/output/WB_fwi.nii.gz',F,affine)
+save_nifti('/Users/fm1545/Desktop/R01_study/study/1003/dtrecon/output/WB_fwiFA.nii.gz',FA,affine)
+save_nifti('/Users/fm1545/Desktop/R01_study/study/1003/dtrecon/output/WB_fwiMD.nii.gz',MD,affine)
 
 
