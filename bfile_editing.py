@@ -27,8 +27,8 @@ for subj in subjects:
         """
 
         # load directory names
-        input_directory = "/Users/fayemckenna/Desktop/Ivim/ivim_proc/bfiles/%s" % subj
-        output_directory = "/Users/fayemckenna/Desktop/Ivim/ivim_proc/bfiles/%s" % subj
+        input_directory = "/Users/fayemckenna/Desktop/Ivim/Diff_procnew/%s" % subj
+        output_directory = "/Users/fayemckenna/Desktop/Ivim/Diff_procnew/%s" % subj
 
         # filenames -- mask has all NaN removed to work with function
         fbval = input_directory + "/all_new_bvals.txt"
@@ -68,7 +68,7 @@ for subj in subjects:
         """
 
         #select IVIM indices from bvecs
-        noddi_bvecs = bvecs[[0,0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150],:]
+        noddi_bvecs = bvecs[[0,0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150],:]
 
         # transpose bvecs
         t_noddi_bvecs = np.transpose(noddi_bvecs)
@@ -76,7 +76,7 @@ for subj in subjects:
         #select IVIM indices from bvals
         n2bvals = np.array(bvals)
         n2bvals[0:10]=0
-        indices2 = [0,0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150]
+        indices2 = [0,0,1,2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150]
         noddi_bvals = np.take(n2bvals, indices2)
         print(noddi_bvals)
 
@@ -90,14 +90,42 @@ for subj in subjects:
         print(t_noddi_bvals.shape)
 
         """
+        FWI
+        """
+
+        # select IVIM indices from bvecs
+        fwi_bvecs = bvecs[[0, 0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 127, 128, 129, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150], :]
+
+        # transpose bvecs
+        t_fwi_bvecs = np.transpose(fwi_bvecs)
+
+        # select IVIM indices from bvals
+        n3bvals = np.array(bvals)
+        n3bvals[0:10] = 0
+        indices3 = [0, 0, 1, 2, 3, 5, 6, 7, 8, 9, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40, 42, 44, 46, 48, 50, 52, 54, 56, 58, 60, 62, 64, 66, 68, 70, 72, 74, 76, 78, 80, 82, 84, 86, 88, 90, 92, 94, 96, 98, 100, 102, 127, 128, 129, 130, 132, 134, 136, 138, 140, 142, 144, 146, 148, 150]
+        fwi_bvals = np.take(n3bvals, indices3)
+        print(fwi_bvals)
+
+        # traspose bvals
+        c = np.array(fwi_bvals)
+        c = c.reshape((-1, 1))
+        t_fwi_bvals = np.transpose(c)
+
+        # check dimensions match
+        print(t_fwi_bvecs.shape)
+        print(t_fwi_bvals.shape)
+
+        """
         Export
         """
 
         #save files
-        np.savetxt(output_directory + "/ivimbvecs.txt", np.array(t_ivim_bvecs), fmt="%s")
-        np.savetxt(output_directory + "/ivimbvals.txt", np.array(t_ivim_bvals), fmt="%s")
-        np.savetxt(output_directory + "/noddibvecs.txt", np.array(t_noddi_bvecs), fmt="%s")
-        np.savetxt(output_directory + "/noddibvals.txt", np.array(t_noddi_bvals), fmt="%s")
+        #np.savetxt(output_directory + "/ivimbvecs.txt", np.array(t_ivim_bvecs), fmt="%s")
+        #np.savetxt(output_directory + "/ivimbvals.txt", np.array(t_ivim_bvals), fmt="%s")
+        #np.savetxt(output_directory + "/noddibvecs.txt", np.array(t_noddi_bvecs), fmt="%s")
+        #np.savetxt(output_directory + "/noddibvals.txt", np.array(t_noddi_bvals), fmt="%s")
+        np.savetxt(output_directory + "/fwibvecs.txt", np.array(t_fwi_bvecs), fmt="%s")
+        np.savetxt(output_directory + "/fwibvals.txt", np.array(t_fwi_bvals), fmt="%s")
 
     except Exception as error:
         print(error)
